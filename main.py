@@ -43,25 +43,28 @@ with app.app_context():
 #     img_url="https://image.tmdb.org/t/p/w500/tjrX2oWRCM3Tvarz38zlZM7Uc10.jpg"
 # )
 
-second_movie = Movie(
-    title="Avatar The Way of Water",
-    year=2022,
-    description="Set more than a decade after the events of the first film, learn the story of the Sully family (Jake, Neytiri, and their kids), the trouble that follows them, the lengths they go to keep each other safe, the battles they fight to stay alive, and the tragedies they endure.",
-    rating=7.3,
-    ranking=9,
-    review="I liked the water.",
-    img_url="https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg"
-)
-
-with app.app_context():
-    # db.session.add(new_movie)
-    db.session.add(second_movie)
-    db.session.commit()
+# second_movie = Movie(
+#     title="Avatar The Way of Water",
+#     year=2022,
+#     description="Set more than a decade after the events of the first film, learn the story of the Sully family (Jake, Neytiri, and their kids), the trouble that follows them, the lengths they go to keep each other safe, the battles they fight to stay alive, and the tragedies they endure.",
+#     rating=7.3,
+#     ranking=9,
+#     review="I liked the water.",
+#     img_url="https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg"
+# )
+#
+# with app.app_context():
+#     # db.session.add(new_movie)
+#     db.session.add(second_movie)
+#     db.session.commit()
 
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    result = db.session.execute(db.select(Movie))
+    # Use .scalars() to get the elements rather than entire rows from the database
+    all_movies = result.scalars()
+    return render_template("index.html", movies=all_movies)
 
 
 if __name__ == '__main__':
