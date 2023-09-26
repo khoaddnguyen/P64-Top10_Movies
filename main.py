@@ -63,12 +63,22 @@ class RateMovieForm(FlaskForm):
     review = StringField("Your Review")
     submit = SubmitField("Done")
 
+class FindMovieForm(FlaskForm):
+    title = StringField("Movie Title", validators=[DataRequired()])
+    submit = SubmitField("Add Movie")
+
 @app.route("/")
 def home():
     result = db.session.execute(db.select(Movie))
     # Use .scalars() to get the elements rather than entire rows from the database
     all_movies = result.scalars()
     return render_template("index.html", movies=all_movies)
+
+# add new movie via the /add route
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    form = FindMovieForm()
+    return render_template("add.html", form=form)
 
 @app.route("/edit", methods=["GET", "POST"])
 def rate_movie():
@@ -81,6 +91,8 @@ def rate_movie():
         db.session.commit()
         return redirect(url_for('home'))
     return render_template("edit.html", movie=movie, form=form)
+
+
 
 @app.route("/delete")
 def delete_movie():
